@@ -15,8 +15,9 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using mpBaseInt;
-using mpSettings;
-using ModPlus;
+using ModPlusAPI;
+using ModPlusAPI.Windows;
+using ModPlusAPI.Windows.Helpers;
 using Word = Microsoft.Office.Interop.Word;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -34,16 +35,12 @@ namespace mpDbViewer
         public MpDbviewerWindow()
         {
             InitializeComponent();
-            MpWindowHelpers.OnWindowStartUp(
-                this,
-                MpSettings.GetValue("Settings", "MainSet", "Theme"),
-                MpSettings.GetValue("Settings", "MainSet", "AccentColor"),
-                MpSettings.GetValue("Settings", "MainSet", "BordersType")
-                );
+            this.OnWindowStartUp();
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
+            SizeToContent = SizeToContent.Manual;
             // ОБЯЗАТЕЛЬНО!
             // "Загрузка" документов баз данных
             mpMetall.Metall.LoadAllDocument();
@@ -52,25 +49,23 @@ namespace mpDbViewer
             mpMaterial.Material.LoadAllDocument();
             mpOther.Other.LoadAllDocument();
             // Марки стали - документы
-            this.CbSteelDocument.ItemsSource = SteelDocuments.GetSteels();
-            this.CbSteelDocument.SelectedIndex = 0;
+            CbSteelDocument.ItemsSource = SteelDocuments.GetSteels();
+            CbSteelDocument.SelectedIndex = 0;
             // Загружаем значение из файла настроек
-            var selectedDb = MpSettings.GetValue("Settings", "mpDBviewer", "selectedDB");
+            var selectedDb = UserConfigFile.GetValue(UserConfigFile.ConfigFileZone.Settings, "mpDBviewer", "selectedDB");
             if (!string.IsNullOrEmpty(selectedDb))
             {
-                int index;
-                if (int.TryParse(selectedDb, out index))
-                    this.CbDataBases.SelectedIndex = index;
+                if (int.TryParse(selectedDb, out int index))
+                    CbDataBases.SelectedIndex = index;
             }
-            var selectedGroup = MpSettings.GetValue("Settings", "mpDBviewer", "selectedGroup");
+            var selectedGroup = UserConfigFile.GetValue(UserConfigFile.ConfigFileZone.Settings, "mpDBviewer", "selectedGroup");
             if (!string.IsNullOrEmpty(selectedGroup))
             {
-                int index;
-                if (int.TryParse(selectedGroup, out index))
+                if (int.TryParse(selectedGroup, out int index))
                 {
                     try
                     {
-                        this.LbGroups.SelectedIndex = index;
+                        LbGroups.SelectedIndex = index;
                     }
                     catch
                     {
@@ -86,29 +81,29 @@ namespace mpDbViewer
         // Очистка всех контроллов
         private void ClearAllControls()
         {
-            this.LbGroups.ItemsSource = null;
+            LbGroups.ItemsSource = null;
             ClearAllExceptGroups();
         }
         // Очистка всех, кроме списка групп
         private void ClearAllExceptGroups()
         {
-            this.DgItems.Columns.Clear();
-            this.DgItems.ItemsSource = null;
-            this.LbDocuments.ItemsSource = null;
-            this.BtShowImage.IsEnabled = false;
-            this.TabItemExport.Visibility = Visibility.Collapsed;
-            this.TbDocumentName.Text = string.Empty;
+            DgItems.Columns.Clear();
+            DgItems.ItemsSource = null;
+            LbDocuments.ItemsSource = null;
+            BtShowImage.IsEnabled = false;
+            TabItemExport.Visibility = Visibility.Collapsed;
+            TbDocumentName.Text = string.Empty;
             // 
-            this.TabControlDetail.SelectedIndex = 0;
-            this.StkSteel.Visibility = Visibility.Collapsed;
-            this.LbDocumentTypes.ItemsSource = null;
-            this.StkNaim.Visibility = Visibility.Collapsed;
-            this.TvDocuments.ItemsSource = null;
-            this.BtShowAsTree.Visibility = Visibility.Collapsed;
-            this.BtShowAsList.Visibility = Visibility.Collapsed;
+            TabControlDetail.SelectedIndex = 0;
+            StkSteel.Visibility = Visibility.Collapsed;
+            LbDocumentTypes.ItemsSource = null;
+            StkNaim.Visibility = Visibility.Collapsed;
+            TvDocuments.ItemsSource = null;
+            BtShowAsTree.Visibility = Visibility.Collapsed;
+            BtShowAsList.Visibility = Visibility.Collapsed;
             _currentDocument = null;
-            this.TbNaimFirst.Text = string.Empty;
-            this.TbNaimSecond.Text = string.Empty;
+            TbNaimFirst.Text = string.Empty;
+            TbNaimSecond.Text = string.Empty;
         }
         // Выбор базы данных
         private void CbDataBases_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -140,57 +135,56 @@ namespace mpDbViewer
                 }
             }
             if (_currentDocumentCollection != null)
-                this.LbGroups.ItemsSource = _currentDocumentCollection.Select(x => x.Group).ToList().Distinct();
+                LbGroups.ItemsSource = _currentDocumentCollection.Select(x => x.Group).ToList().Distinct();
         }
         // Выбор группы
         private void LbGroups_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ClearAllExceptGroups();
             var listbox = sender as ListBox;
-            if (listbox != null)
-                if (listbox.ItemsSource != null)
+            if (listbox?.ItemsSource != null)
+            {
+                var selectedGroup = listbox.SelectedItem.ToString();
+                if (!string.IsNullOrEmpty(selectedGroup))
                 {
-                    var selectedGroup = listbox.SelectedItem.ToString();
-                    if (!string.IsNullOrEmpty(selectedGroup))
+                    // Если для указанной группы значений ShortName больше 1, то отображаем в виде дерева
+                    // если всего 1, то в виде списка
+                    // Но заполняем и то, и другое, чтобы можно было переключаться
+                    var lst = _currentDocumentCollection.Where(x => x.Group.Equals(selectedGroup)).ToList();
+                    lst.Sort(new DocumentsSortComparer());
+                    LbDocuments.ItemsSource = lst;
+
+                    var hlst = new ObservableCollection<GroupByShortName>();
+
+                    foreach (var srtName in lst.Select(x => x.ShortName).Distinct())
                     {
-                        // Если для указанной группы значений ShortName больше 1, то отображаем в виде дерева
-                        // если всего 1, то в виде списка
-                        // Но заполняем и то, и другое, чтобы можно было переключаться
-                        var lst = _currentDocumentCollection.Where(x => x.Group.Equals(selectedGroup)).ToList();
-                        lst.Sort(new DocumentsSortComparer());
-                        this.LbDocuments.ItemsSource = lst;
-
-                        var hlst = new ObservableCollection<GroupByShortName>();
-
-                        foreach (var srtName in lst.Select(x => x.ShortName).Distinct())
+                        var shortNames = new GroupByShortName { ShortName = srtName };
+                        var name = srtName;
+                        foreach (var document in lst.Where(document => document.ShortName.Equals(name)))
                         {
-                            var shortNames = new GroupByShortName { ShortName = srtName };
-                            var name = srtName;
-                            foreach (var document in lst.Where(document => document.ShortName.Equals(name)))
-                            {
-                                shortNames.Documents.Add(document);
-                            }
-                            hlst.Add(shortNames);
+                            shortNames.Documents.Add(document);
                         }
+                        hlst.Add(shortNames);
+                    }
 
-                        this.TvDocuments.ItemsSource = hlst;
+                    TvDocuments.ItemsSource = hlst;
 
-                        if (hlst.Count > 1)
-                        {
-                            this.TvDocuments.Visibility = Visibility.Visible;
-                            this.LbDocuments.Visibility = Visibility.Collapsed;
-                            this.BtShowAsList.Visibility = Visibility.Visible;
-                            this.BtShowAsTree.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            this.TvDocuments.Visibility = Visibility.Collapsed;
-                            this.LbDocuments.Visibility = Visibility.Visible;
-                            this.BtShowAsList.Visibility = Visibility.Collapsed;
-                            this.BtShowAsTree.Visibility = Visibility.Visible;
-                        }
+                    if (hlst.Count > 1)
+                    {
+                        TvDocuments.Visibility = Visibility.Visible;
+                        LbDocuments.Visibility = Visibility.Collapsed;
+                        BtShowAsList.Visibility = Visibility.Visible;
+                        BtShowAsTree.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        TvDocuments.Visibility = Visibility.Collapsed;
+                        LbDocuments.Visibility = Visibility.Visible;
+                        BtShowAsList.Visibility = Visibility.Collapsed;
+                        BtShowAsTree.Visibility = Visibility.Visible;
                     }
                 }
+            }
         }
         private class GroupByShortName
         {
@@ -198,8 +192,7 @@ namespace mpDbViewer
             {
                 Documents = new ObservableCollection<BaseDocument>();
             }
-
-            public string ShortName { private get; set; }
+            public string ShortName { get; set; }
             public ObservableCollection<BaseDocument> Documents { get; private set; }
         }
         // Компаратор для сортировки списка документов
@@ -220,28 +213,21 @@ namespace mpDbViewer
         private void LbDocuments_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var listbox = sender as ListBox;
-            if (listbox != null)
-            {
-                var docInBase = listbox.SelectedItem as BaseDocument;
-                if (docInBase != null) FillDataGridWithItems(docInBase);
-            }
+            var docInBase = listbox?.SelectedItem as BaseDocument;
+            if (docInBase != null) FillDataGridWithItems(docInBase);
         }
         // Выбор документа в TreeView
         private void TvDocuments_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var treeView = sender as TreeView;
-            if (treeView != null)
-            {
-                var tvi = treeView.SelectedItem;
-                if (tvi is BaseDocument)
-                    if (tvi != null) FillDataGridWithItems(tvi as BaseDocument);
-            }
+            var tvi = treeView?.SelectedItem;
+            if (tvi is BaseDocument) FillDataGridWithItems(tvi as BaseDocument);
         }
 
         private void FillDataGridWithItems(BaseDocument baseDocument)
         {
-            this.DgItems.Columns.Clear();
-            this.DgItems.ItemsSource = null;
+            DgItems.Columns.Clear();
+            DgItems.ItemsSource = null;
             // Текущий выбранный документ
             _currentDocument = baseDocument;
             // Заполняем вкладку "Свойства"
@@ -249,7 +235,7 @@ namespace mpDbViewer
             {
                 itemType.SelectedItem = itemType.TypeValues[0];
             }
-            this.LbDocumentTypes.ItemsSource = baseDocument.ItemTypes;
+            LbDocumentTypes.ItemsSource = baseDocument.ItemTypes;
 
             if (!(baseDocument.SymbolCount == 0 | baseDocument.Symbols == null))
             {
@@ -261,39 +247,39 @@ namespace mpDbViewer
                         Header = baseDocument.Symbols.ElementAt(i - 1),
                         Binding = new Binding("Attribute[Prop" + i.ToString(CultureInfo.InvariantCulture) + "].Value")
                     };
-                    this.DgItems.Columns.Add(dgc);
+                    DgItems.Columns.Add(dgc);
                 }
-                this.DgItems.ItemsSource = baseDocument.Items.Elements("Item");
+                DgItems.ItemsSource = baseDocument.Items.Elements("Item");
                 // Сразу выберем первый элемент в списке, чтобы отобразилось условное обозначение
-                this.DgItems.SelectedIndex = 0;
+                DgItems.SelectedIndex = 0;
             }
             else ShowItemNaim(); // Так как при отсутствии таблицы метода не сработает автоматически
             // Если SymbolCount = 0, значит таблицы нет. Тогда сразу открываем вторую вкладку
             // если вторая вкладка была открыта уже, то не меняем ничего (для удобства пользования)
-            if (this.TabControlDetail.SelectedIndex != 1)
-                this.TabControlDetail.SelectedIndex = baseDocument.SymbolCount == 0 ? 1 : 0;
+            if (TabControlDetail.SelectedIndex != 1)
+                TabControlDetail.SelectedIndex = baseDocument.SymbolCount == 0 ? 1 : 0;
 
             // Активация кнопки "изображение"
-            this.BtShowImage.IsEnabled = !string.IsNullOrEmpty(baseDocument.Image);
+            BtShowImage.IsEnabled = !string.IsNullOrEmpty(baseDocument.Image);
             // Название
-            this.TbDocumentName.DataContext = baseDocument;
+            TbDocumentName.DataContext = baseDocument;
             // Видимость кнопок и прочего
-            this.TabItemExport.Visibility = Visibility.Visible;
+            TabItemExport.Visibility = Visibility.Visible;
             // Если есть сталь
-            this.StkSteel.Visibility = baseDocument.HasSteel ? Visibility.Visible : Visibility.Collapsed;
-            this.NaimSplitter.Visibility = baseDocument.HasSteel ? Visibility.Visible : Visibility.Collapsed;
-            this.TbNaimSecond.Visibility = baseDocument.HasSteel ? Visibility.Visible : Visibility.Collapsed;
+            StkSteel.Visibility = baseDocument.HasSteel ? Visibility.Visible : Visibility.Collapsed;
+            NaimSplitter.Visibility = baseDocument.HasSteel ? Visibility.Visible : Visibility.Collapsed;
+            TbNaimSecond.Visibility = baseDocument.HasSteel ? Visibility.Visible : Visibility.Collapsed;
             // Включаем отображение "Наименовани"
-            this.StkNaim.Visibility = Visibility.Visible;
+            StkNaim.Visibility = Visibility.Visible;
         }
 
         private void BtShowImage_OnClick(object sender, RoutedEventArgs e)
         {
             BaseDocument docInBase = null;
-            if (this.LbDocuments.Visibility == Visibility.Visible)
-                docInBase = this.LbDocuments.SelectedItem as BaseDocument;
-            if (this.TvDocuments.Visibility == Visibility.Visible)
-                docInBase = this.TvDocuments.SelectedItem as BaseDocument;
+            if (LbDocuments.Visibility == Visibility.Visible)
+                docInBase = LbDocuments.SelectedItem as BaseDocument;
+            if (TvDocuments.Visibility == Visibility.Visible)
+                docInBase = TvDocuments.SelectedItem as BaseDocument;
             if (docInBase != null)
             {
                 ShowBaseElementImage win;
@@ -333,13 +319,13 @@ namespace mpDbViewer
             {
                 if (textbox.Text.Length >= 2)
                     SearchDocumentsInDb(textbox.Text);
-                else this.LbSearchResults.ItemsSource = null;
+                else LbSearchResults.ItemsSource = null;
             }
         }
 
         private void SearchDocumentsInDb(string stringForSearch)
         {
-            this.LbSearchResults.ItemsSource = null;
+            LbSearchResults.ItemsSource = null;
 
             // Список доступных коллекций
             var documentCollections = new List<ICollection<BaseDocument>>
@@ -361,84 +347,78 @@ namespace mpDbViewer
                     baseDocument.DocumentType.ToLower().Contains(stringForSearch.ToLower())));
             }
             if (resultLst.Count > 0)
-                this.LbSearchResults.ItemsSource = resultLst;
+                LbSearchResults.ItemsSource = resultLst;
         }
         // Выбор элемента в списке результатов
         private void LbSearchResults_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var listBox = sender as ListBox;
-            if (listBox != null)
+            var baseElement = listBox?.SelectedItem as BaseDocument;
+            if (baseElement != null)
             {
-                var baseElement = listBox.SelectedItem as BaseDocument;
-                if (baseElement != null)
+                // Выбираем в списке базу
+                foreach (ComboBoxItem item in CbDataBases.Items)
                 {
-                    // Выбираем в списке базу
-                    foreach (ComboBoxItem item in this.CbDataBases.Items)
+                    if (item.Name.Equals(baseElement.DataBaseName))
                     {
-                        if (item.Name.Equals(baseElement.DataBaseName))
+                        CbDataBases.SelectedItem = item;
+                        break;
+                    }
+                }
+                // Выбираем в списке группу
+                listBox = LbGroups;
+                if (listBox?.ItemsSource != null)
+                    foreach (var item in listBox.Items)
+                    {
+                        if (item.ToString().Equals(baseElement.Group))
                         {
-                            this.CbDataBases.SelectedItem = item;
-                            break;
+                            listBox.SelectedItem = item;
                         }
                     }
-                    // Выбираем в списке группу
-                    listBox = this.LbGroups;
-                    if (listBox != null)
-                    {
-                        if (listBox.ItemsSource != null)
-                            foreach (var item in listBox.Items)
+                // Выбираем в списке документ
+                listBox = LbDocuments;
+                if (listBox != null && listBox.Visibility == Visibility.Visible)
+                {
+                    if (listBox.ItemsSource != null)
+                        foreach (BaseDocument item in listBox.Items)
+                        {
+                            if (item.Equals(baseElement))
                             {
-                                if (item.ToString().Equals(baseElement.Group))
-                                {
-                                    listBox.SelectedItem = item;
-                                }
+                                listBox.SelectedItem = item;
                             }
-                    }
-                    // Выбираем в списке документ
-                    listBox = this.LbDocuments;
-                    if (listBox != null && listBox.Visibility == Visibility.Visible)
-                    {
-                        if (listBox.ItemsSource != null)
-                            foreach (BaseDocument item in listBox.Items)
+                        }
+                }
+                var treeView = TvDocuments;
+                if (treeView != null && treeView.Visibility == Visibility.Visible)
+                {
+                    if (treeView.ItemsSource != null)
+                        foreach (var item in treeView.Items)
+                        {
+                            if (item is GroupByShortName)
                             {
-                                if (item.Equals(baseElement))
+                                foreach (var doc in (item as GroupByShortName).Documents)
                                 {
-                                    listBox.SelectedItem = item;
-                                }
-                            }
-                    }
-                    var treeView = this.TvDocuments;
-                    if (treeView != null && treeView.Visibility == Visibility.Visible)
-                    {
-                        if (treeView.ItemsSource != null)
-                            foreach (var item in treeView.Items)
-                            {
-                                if (item is GroupByShortName)
-                                {
-                                    foreach (var doc in (item as GroupByShortName).Documents)
+                                    if (doc.Equals(baseElement))
                                     {
-                                        if (doc.Equals(baseElement))
-                                        {
-                                            treeView.SelectItem(doc);
-                                        }
+                                        treeView.SelectItem(doc);
                                     }
                                 }
                             }
-                    }
+                        }
                 }
             }
         }
         // Открыть панель поиска
         private void BtOpenSearchPanel_OnClick(object sender, RoutedEventArgs e)
         {
-            this.FlyoutSearch.IsOpen = !this.FlyoutSearch.IsOpen;
-            this.TbSearchTxt.Focus();
+            FlyoutSearch.IsOpen = !FlyoutSearch.IsOpen;
+            TbSearchTxt.Focus();
         }
         #endregion
         // Закрытие по Esc
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape) this.Close();
+            if (e.Key == Key.Escape) Close();
         }
         // Навели мышку на кнопку
         private void DocumentShowButtons_OnMouseEnter(object sender, MouseEventArgs e)
@@ -456,55 +436,47 @@ namespace mpDbViewer
         // Нажатие кнопки "Отобразить в виде списка" 
         private void BtShowAsList_OnClick(object sender, RoutedEventArgs e)
         {
-            this.TvDocuments.Visibility = Visibility.Collapsed;
-            this.LbDocuments.Visibility = Visibility.Visible;
-            this.BtShowAsList.Visibility = Visibility.Collapsed;
-            this.BtShowAsTree.Visibility = Visibility.Visible;
+            TvDocuments.Visibility = Visibility.Collapsed;
+            LbDocuments.Visibility = Visibility.Visible;
+            BtShowAsList.Visibility = Visibility.Collapsed;
+            BtShowAsTree.Visibility = Visibility.Visible;
             // Если был выбран элемент
-            if (this.TvDocuments.SelectedItem != null)
-                if (this.TvDocuments.SelectedItem is BaseDocument)
-                {
-                    this.LbDocuments.SelectionChanged -= LbDocuments_OnSelectionChanged;
-                    this.LbDocuments.SelectedItem = this.TvDocuments.SelectedItem;
-                    this.LbDocuments.ScrollIntoView(this.LbDocuments.SelectedItem);
-                    this.LbDocuments.SelectionChanged += LbDocuments_OnSelectionChanged;
-                }
+            if (TvDocuments.SelectedItem is BaseDocument)
+            {
+                LbDocuments.SelectionChanged -= LbDocuments_OnSelectionChanged;
+                LbDocuments.SelectedItem = TvDocuments.SelectedItem;
+                LbDocuments.ScrollIntoView(LbDocuments.SelectedItem);
+                LbDocuments.SelectionChanged += LbDocuments_OnSelectionChanged;
+            }
         }
         // Нажатие кнопки "Отобразить в виде дерева" 
         private void BtShowAsTree_OnClick(object sender, RoutedEventArgs e)
         {
-            this.TvDocuments.Visibility = Visibility.Visible;
-            this.LbDocuments.Visibility = Visibility.Collapsed;
-            this.BtShowAsList.Visibility = Visibility.Visible;
-            this.BtShowAsTree.Visibility = Visibility.Collapsed;
+            TvDocuments.Visibility = Visibility.Visible;
+            LbDocuments.Visibility = Visibility.Collapsed;
+            BtShowAsList.Visibility = Visibility.Visible;
+            BtShowAsTree.Visibility = Visibility.Collapsed;
             // Если был выбран элемент
-            if (this.LbDocuments.SelectedItem != null)
-                if (this.LbDocuments.SelectedItem is BaseDocument)
-                {
-                    this.TvDocuments.SelectedItemChanged -= TvDocuments_OnSelectedItemChanged;
-                    this.TvDocuments.SelectItem(this.LbDocuments.SelectedItem);
-                    this.TvDocuments.SelectedItemChanged += TvDocuments_OnSelectedItemChanged;
-                }
+            if (LbDocuments.SelectedItem is BaseDocument)
+            {
+                TvDocuments.SelectedItemChanged -= TvDocuments_OnSelectedItemChanged;
+                TvDocuments.SelectItem(LbDocuments.SelectedItem);
+                TvDocuments.SelectedItemChanged += TvDocuments_OnSelectedItemChanged;
+            }
         }
         // Выбор документа на сталь
         private void CbSteelDocument_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.CbSteelType.ItemsSource = null;
+            CbSteelType.ItemsSource = null;
             var comboBox = sender as ComboBox;
-            if (comboBox != null)
+            var steelDoc = comboBox?.SelectedItem;
+            var steel = steelDoc as Steel;
+            if (steel != null)
             {
-                var steelDoc = comboBox.SelectedItem;
-                if (steelDoc != null)
-                {
-                    var steel = steelDoc as Steel;
-                    if (steel != null)
-                    {
-                        this.CbSteelType.ItemsSource = steel.Values;
-                        comboBox.ToolTip = steel.DocumentName;
-                        this.CbSteelType.SelectedIndex = 0;
-                        ShowItemNaim();
-                    }
-                }
+                CbSteelType.ItemsSource = steel.Values;
+                comboBox.ToolTip = steel.DocumentName;
+                CbSteelType.SelectedIndex = 0;
+                ShowItemNaim();
             }
         }
 
@@ -513,21 +485,21 @@ namespace mpDbViewer
             // when return = clean textBox!!!
             if (_currentDocument == null)
             {
-                this.TbNaimFirst.Text = string.Empty;
-                this.TbNaimSecond.Text = string.Empty;
+                TbNaimFirst.Text = string.Empty;
+                TbNaimSecond.Text = string.Empty;
                 return;
             }
             // Получаем правило написания для документа
             var rule = _currentDocument.Rule;
             if (string.IsNullOrEmpty(rule))
             {
-                this.TbNaimFirst.Text = string.Empty;
-                this.TbNaimSecond.Text = string.Empty;
+                TbNaimFirst.Text = string.Empty;
+                TbNaimSecond.Text = string.Empty;
                 return;
             }
-            var brkResult = BreakString(rule, '[', ']');
+            var brkResult = ModPlusAPI.IO.String.BreakString(rule, '[', ']');
             var sb = new StringBuilder();
-            var selectedItem = this.DgItems.SelectedItem as XElement;
+            var selectedItem = DgItems.SelectedItem as XElement;
             // Проходим по списку знаков сверяя его с атрибутами (и не только)
             foreach (var _char in brkResult)
             {
@@ -545,7 +517,7 @@ namespace mpDbViewer
                 }
                 // проходим по ItemTypes
                 if (_currentDocument.ItemTypes.Count > 0)
-                    foreach (BaseDocument.ItemType itemType in this.LbDocumentTypes.Items)
+                    foreach (BaseDocument.ItemType itemType in LbDocumentTypes.Items)
                     {
                         if (itemType.TypeName.Equals(_char))
                         {
@@ -570,42 +542,12 @@ namespace mpDbViewer
                 // Если предыдущие проверки не дали результат, значит это просто текст
                 if (!appended) sb.Append(_char);
             }
-            this.TbNaimFirst.Text = sb.ToString();
-            var steel = this.CbSteelDocument.SelectedItem as Steel;
+            TbNaimFirst.Text = sb.ToString();
+            var steel = CbSteelDocument.SelectedItem as Steel;
             if (steel != null)
-                this.TbNaimSecond.Text = this.CbSteelType.SelectedItem + " " + steel.Document;
+                TbNaimSecond.Text = CbSteelType.SelectedItem + " " + steel.Document;
         }
-        private static IEnumerable<string> BreakString(string str, char symbol1, char symbol2)
-        {
-            var result = new List<string>();
-            var k = -1;
-            var sb = new StringBuilder();
-            for (var i = 0; i < str.Length; i++)
-            {
-                if (str[i].Equals(symbol1))
-                {
-                    if (sb.Length > 0)
-                        result.Insert(k, sb.ToString());
-                    sb = new StringBuilder();
-                    if (i > 1)
-                        if (!str[i - 1].Equals(symbol2))
-                            k++;
-                }
-                else if (str[i].Equals(symbol2))
-                {
-                    result.Insert(k, sb.ToString());
-                    sb = new StringBuilder();
-                    k++;
-                }
-                else
-                {
-                    if (k == -1)
-                        k++;
-                    sb.Append(str[i]);
-                }
-            }
-            return result;
-        }
+        
         #region Export
         // Експорт документа в Excel
         private void BtExportDocumentToExcel_OnClick(object sender, RoutedEventArgs e)
@@ -706,7 +648,7 @@ namespace mpDbViewer
                 }
                 ReleaseComObject(oExcel);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 oExcel.Quit();
                 ReleaseComObject(oExcel);
@@ -750,36 +692,9 @@ namespace mpDbViewer
                     str += i + "\t" + doc;
                 }
             }
-            NotepadHelper.ShowMessage(str);
-
-
+            ModPlusAPI.IO.String.ShowTextWithNotepad(str);
         }
-        private static class NotepadHelper
-        {
-            [DllImport("user32.dll", EntryPoint = "SetWindowText")]
-            private static extern int SetWindowText(IntPtr hWnd, string text);
-
-            [DllImport("user32.dll", EntryPoint = "FindWindowEx")]
-            private static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
-
-            [DllImport("User32.dll", EntryPoint = "SendMessage")]
-            private static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
-
-            public static void ShowMessage(string message = null, string title = null)
-            {
-                var notepad = Process.Start(new ProcessStartInfo("notepad.exe"));
-                notepad.WaitForInputIdle();
-
-                if (!string.IsNullOrEmpty(title))
-                    SetWindowText(notepad.MainWindowHandle, title);
-
-                if (notepad != null && !string.IsNullOrEmpty(message))
-                {
-                    var child = FindWindowEx(notepad.MainWindowHandle, new IntPtr(0), "Edit", null);
-                    SendMessage(child, 0x000C, 0, message);
-                }
-            }
-        }
+        
         // Експорт документа в Word
         private void BtExportDocumentToWord_OnClick(object sender, RoutedEventArgs e)
         {
@@ -881,7 +796,7 @@ namespace mpDbViewer
                 }
                 ReleaseComObject(oWord);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 oWord.Quit(SaveChanged, Type.Missing, Type.Missing);
                 ReleaseComObject(oWord);
@@ -892,12 +807,9 @@ namespace mpDbViewer
         private void DgItems_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var dataGrid = sender as DataGrid;
-            if (dataGrid != null)
-            {
-                var selected = dataGrid.SelectedItem;
-                if (selected != null)
-                    ShowItemNaim();
-            }
+            var selected = dataGrid?.SelectedItem;
+            if (selected != null)
+                ShowItemNaim();
         }
         // Выбор Itemtype
         private void CbItemType_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -912,14 +824,14 @@ namespace mpDbViewer
         // Window closing
         private void MpDbviewerWindow_OnClosed(object sender, EventArgs e)
         {
-            var cb = this.CbDataBases;
+            var cb = CbDataBases;
             // Сохраняем в файл настроек выбранную базу
             if (cb?.SelectedIndex != -1)
-                MpSettings.SetValue("Settings", "mpDBviewer", "selectedDB", cb?.SelectedIndex.ToString(), true);
+                UserConfigFile.SetValue(UserConfigFile.ConfigFileZone.Settings, "mpDBviewer", "selectedDB", cb?.SelectedIndex.ToString(), true);
             // Сохраняем выбранную группу
-            var lb = this.LbGroups;
+            var lb = LbGroups;
             if (lb?.SelectedIndex != -1)
-                MpSettings.SetValue("Settings", "mpDBviewer", "selectedGroup", cb?.SelectedIndex.ToString(), true);
+                UserConfigFile.SetValue(UserConfigFile.ConfigFileZone.Settings, "mpDBviewer", "selectedGroup", cb?.SelectedIndex.ToString(), true);
         }
 
     }

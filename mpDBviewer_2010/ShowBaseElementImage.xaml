@@ -1,7 +1,7 @@
 ﻿<controls:MetroWindow x:Class="mpDbViewer.ShowBaseElementImage"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:mpDbViewer="clr-namespace:mpDbViewer"
+                      xmlns:mpDecorators="clr-namespace:ModPlusAPI.Windows.Helpers.Decorators;assembly=ModPlusAPI"
                       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                       ShowTitleBar="False" ResizeMode="CanResizeWithGrip"
                       ShowMaxRestoreButton="False" ShowMinButton="False" ShowInTaskbar="False"
@@ -17,12 +17,14 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/ModPlusAPI;component/Windows/WinResources/Styles.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <mpDbViewer:DevicePixels Margin="2,30,2,2">
+        <mpDecorators:DevicePixels Margin="2,30,2,2">
             <Image Name="Img" Stretch="Uniform"></Image>
-        </mpDbViewer:DevicePixels>
+        </mpDecorators:DevicePixels>
     </Grid>
 </controls:MetroWindow>
+
