@@ -42,7 +42,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="MahApps.Metro">
-      <HintPath>..\..\..\..\..\..\..\ModPlus\MahApps.Metro.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\ModPlus\Extensions\MahApps.Metro.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
@@ -56,11 +56,11 @@
       <HintPath>..\..\..\..\ExtDlls\Office14\Microsoft.Office.Interop.Word.dll</HintPath>
     </Reference>
     <Reference Include="ModPlusAPI">
-      <HintPath>..\..\..\..\..\..\..\ModPlus\ModPlusAPI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\ModPlus\Extensions\ModPlusAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ModPlus_2011">
-      <HintPath>..\..\..\..\..\..\..\ModPlus\ModPlus_2011.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\ModPlus\Extensions\ModPlus_2011.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="mpBaseInt">
