@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ModPlusAPI.Interfaces;
 
 namespace mpDBviewer
@@ -8,7 +9,9 @@ namespace mpDBviewer
         public SupportedProduct SupportedProduct => SupportedProduct.AutoCAD;
         public string Name => "mpDBviewer";
         public string AvailProductExternalVersion => "2015";
-        public string ClassName => string.Empty;
+        public string FullClassName => string.Empty;
+        public string AppFullClassName => string.Empty;
+        public Guid AddInId => Guid.Empty;
         public string LName => "Нормативная база";
         public string Description => "Функция для просмотра нормативной базы данных плагина";
         public string Author => "Пекшев Александр aka Modis";
