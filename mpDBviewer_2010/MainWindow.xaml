@@ -10,19 +10,19 @@
                       MinWidth="600" MinHeight="500" SaveWindowPosition="True">
     <Window.Resources>
         <ResourceDictionary>
-            <Canvas x:Key="mp_magnify" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+            <Canvas x:Key="MpMagnify" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
                 <Path Width="33.1464" Height="33.1465" Canvas.Left="21.8536" Canvas.Top="22" Stretch="Fill" Fill="Black" Data="F1 M 42.5,22C 49.4036,22 55,27.5964 55,34.5C 55,41.4036 49.4036,47 42.5,47C 40.1356,47 37.9245,46.3435 36,45.2426L 26.9749,54.2678C 25.8033,55.4393 23.9038,55.4393 22.7322,54.2678C 21.5607,53.0962 21.5607,51.1967 22.7322,50.0251L 31.7971,40.961C 30.6565,39.0755 30,36.8644 30,34.5C 30,27.5964 35.5964,22 42.5,22 Z M 42.5,26C 37.8056,26 34,29.8056 34,34.5C 34,39.1944 37.8056,43 42.5,43C 47.1944,43 51,39.1944 51,34.5C 51,29.8056 47.1944,26 42.5,26 Z "/>
             </Canvas>
-            <Canvas x:Key="mp_image" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+            <Canvas x:Key="MpImage" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
                 <Path Width="42" Height="36" Canvas.Left="17" Canvas.Top="20" Stretch="Fill" Fill="Black" Data="F1 M 17,20L 59,20L 59,56L 17,56L 17,20 Z M 20,23L 20,53L 56,53L 56,23L 20,23 Z M 24,51L 30.0833,44.3333L 33.25,47.5L 45.9167,34.8333L 50.6667,39.5833L 54,36L 54,51L 24,51 Z M 30.0833,26.9167C 30.0833,30.4145 27.2478,33.25 23.75,33.25C 23.2033,33.25 22.5061,33.1302 22,33L 22,25L 29.6666,25C 29.7968,25.5061 30.0833,26.3699 30.0833,26.9167 Z "/>
             </Canvas>
-            <Canvas x:Key="mp_list" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+            <Canvas x:Key="MpList" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
                 <Path Width="38" Height="30" Canvas.Left="19" Canvas.Top="23" Stretch="Fill" Fill="Black" Data="F1 M 19,23L 27,23L 27,31L 19,31L 19,23 Z M 19,34L 27,34L 27,42L 19,42L 19,34 Z M 31,23L 57,23L 57,31L 31,31L 31,23 Z M 19,45L 27,45L 27,53L 19,53L 19,45 Z M 31,34L 57,34L 57,42L 31,42L 31,34 Z M 31,45L 57,45L 57,53L 31,53L 31,45 Z "/>
             </Canvas>
-            <Canvas x:Key="mp_text_align_right" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+            <Canvas x:Key="MpTextAlignRight" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
                 <Path Width="34" Height="39" Canvas.Left="23" Canvas.Top="19" Stretch="Fill" Fill="Black" Data="F1 M 23,19L 57,19L 57,25L 23,25L 23,19 Z M 27,52L 57,52L 57,58L 27,58L 27,52 Z M 38,41L 57,41L 57,47L 38,47L 38,41 Z M 32,30L 57,30L 57,36L 32,36L 32,30 Z "/>
             </Canvas>
-            <Canvas x:Key="mp_page_text" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+            <Canvas x:Key="MpPageText" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
                 <Path Width="36" Height="42" Canvas.Left="20" Canvas.Top="17" Stretch="Fill" Fill="Black" Data="F1 M 20,17L 44.25,17L 56,28.75L 56,59L 20,59L 20,17 Z M 24,21L 24,55L 52,55L 52,33L 40,33L 40,21L 24,21 Z M 44,22.25L 44,29L 50.75,29L 44,22.25 Z M 26,23L 38,23L 38,28L 26,28L 26,23 Z M 26,30L 38,30L 38,33L 26,33L 26,30 Z M 26,35L 50,35L 50,38L 26,38L 26,35 Z M 26,40L 50,40L 50,43L 26,43L 26,40 Z M 26,45L 50,45L 50,48L 26,48L 26,45 Z M 26,50L 50,50L 50,53L 26,53L 26,50 Z "/>
             </Canvas>
 
@@ -33,13 +33,12 @@
                     <Setter.Value>
                         <DataTemplate>
                             <TextBlock FontWeight="SemiBold"
-                                       Text="{Binding}"
-                                />
+                                       Text="{Binding}"/>
                         </DataTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
-
+            <XmlDataProvider x:Key="Lang" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/mpDBviewer"></XmlDataProvider>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
@@ -54,24 +53,24 @@
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <Button x:Name="BtExportDocumentsNameToTxtFile"
-                    ToolTip="Получить список документов в базе данных"
-                    Click="BtExportDocumentsNameToTxtFile_OnClick"
-                    >
-                <Rectangle Width="20" Height="20"
+                    ToolTip="{Binding Source={StaticResource Lang}, XPath=h14}"
+                    Click="BtExportDocumentsNameToTxtFile_OnClick">
+                <Rectangle Width="14" Height="16"
                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Uniform"
-                                         Visual="{StaticResource mp_page_text}"></VisualBrush>
+                                         Visual="{StaticResource MpPageText}"></VisualBrush>
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
-            <Button x:Name="BtOpenSearchPanel" ToolTip="Открыть панель поиска по базе данных"
+            <Button x:Name="BtOpenSearchPanel" 
+                    ToolTip="{Binding Source={StaticResource Lang}, XPath=h15}"
                     Click="BtOpenSearchPanel_OnClick">
-                <Rectangle Width="20" Height="20"
+                <Rectangle Width="16" Height="16"
                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Uniform"
-                                         Visual="{StaticResource mp_magnify}"></VisualBrush>
+                                         Visual="{StaticResource MpMagnify}"></VisualBrush>
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
@@ -80,11 +79,10 @@
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout Position="Right"
-                             Header="Поиск"
                              Name="FlyoutSearch">
                 <StackPanel Orientation="Vertical">
                     <TextBox MinWidth="150" Margin="2" Name="TbSearchTxt" TextChanged="TbSearchTxt_OnTextChanged"
-                             controls:TextBoxHelper.Watermark="От 2 символов"></TextBox>
+                             controls:TextBoxHelper.Watermark="{Binding Source={StaticResource Lang}, XPath=h17}"></TextBox>
                     <ListBox Name="LbSearchResults" SelectionChanged="LbSearchResults_OnSelectionChanged" SelectionMode="Single"
                              Padding="2" Width="300" Height="350" Margin="2">
                         <ListBox.ItemTemplate>
@@ -113,7 +111,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" FontSize="16" Content="НОРМАТИВНАЯ БАЗА"></Label>
+        <TextBlock Grid.Row="0" FontSize="16" Margin="0,0,20,5" Text="{Binding Source={StaticResource Lang}, XPath=h1}"></TextBlock>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -128,15 +126,15 @@
             </Grid.RowDefinitions>
             <ComboBox Grid.Row="0" Grid.Column="0" Width="150" Name="CbDataBases"
                   SelectionChanged="CbDataBases_OnSelectionChanged" Margin="2">
-                <ComboBoxItem Name="DbMetall">Металл</ComboBoxItem>
-                <ComboBoxItem Name="DbConcrete">Железобетон</ComboBoxItem>
-                <ComboBoxItem Name="DbWood">Дерево/Пластмасс</ComboBoxItem>
-                <ComboBoxItem Name="DbMaterial">Материалы</ComboBoxItem>
-                <ComboBoxItem Name="DbOther">Прочее</ComboBoxItem>
+                <ComboBoxItem Name="DbMetall" Content="{Binding Source={StaticResource Lang}, XPath=cb1}"></ComboBoxItem>
+                <ComboBoxItem Name="DbConcrete" Content="{Binding Source={StaticResource Lang}, XPath=cb2}"></ComboBoxItem>
+                <ComboBoxItem Name="DbWood" Content="{Binding Source={StaticResource Lang}, XPath=cb3}"></ComboBoxItem>
+                <ComboBoxItem Name="DbMaterial" Content="{Binding Source={StaticResource Lang}, XPath=cb4}"></ComboBoxItem>
+                <ComboBoxItem Name="DbOther" Content="{Binding Source={StaticResource Lang}, XPath=cb5}"></ComboBoxItem>
             </ComboBox>
-            <ListBox Grid.Column="0" Grid.Row="1" Margin="2" Name="LbGroups" 
-                 SelectionChanged="LbGroups_OnSelectionChanged"  Height="120"
-                 BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}">
+            <ListBox Grid.Column="0" Grid.Row="1" Margin="2" Name="LbGroups"
+                     SelectionChanged="LbGroups_OnSelectionChanged"  Height="120"
+                     BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MetroListBoxItem}">
                         <Setter Property="MinHeight" Value="20"></Setter>
@@ -145,10 +143,10 @@
             </ListBox>
             <!--В виде списка-->
             <ListBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" 
-                 Margin="2" Name="LbDocuments" Height="150"
-                 BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}"
-                 SelectionChanged="LbDocuments_OnSelectionChanged"
-                 Visibility="Collapsed">
+                     Margin="2" Name="LbDocuments" Height="150"
+                     BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}"
+                     SelectionChanged="LbDocuments_OnSelectionChanged"
+                     Visibility="Collapsed">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -169,8 +167,9 @@
             </ListBox>
             <!--В виде дерева-->
             <TreeView Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2"
-                  Margin="2" Name="TvDocuments" Height="150" BorderThickness="1"
-                  BorderBrush="{DynamicResource AccentColorBrush}" SelectedItemChanged="TvDocuments_OnSelectedItemChanged">
+                      Margin="2" Name="TvDocuments" Height="150" BorderThickness="1"
+                      BorderBrush="{DynamicResource AccentColorBrush}"
+                      SelectedItemChanged="TvDocuments_OnSelectedItemChanged">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Path=Documents}">
                         <TextBlock Text="{Binding Path=ShortName}"></TextBlock>
@@ -191,52 +190,54 @@
             </TreeView>
             <!--Кнопки переключения список-дерево-->
             <Button Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"
-                VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5,5,20,5"
-                Padding="2" ToolTip="Отобразить в виде списка" Opacity="0.5"
-                MouseEnter="DocumentShowButtons_OnMouseEnter" MouseLeave="DocumentShowButtons_OnMouseLeave"
-                Name="BtShowAsList" Click="BtShowAsList_OnClick" Visibility="Collapsed"
-                 Background="Transparent" BorderThickness="0">
+                    VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5,5,20,5"
+                    Padding="2" ToolTip="{Binding Source={StaticResource Lang}, XPath=h2}" Opacity="0.5"
+                    MouseEnter="DocumentShowButtons_OnMouseEnter" MouseLeave="DocumentShowButtons_OnMouseLeave"
+                    Name="BtShowAsList" Click="BtShowAsList_OnClick" Visibility="Collapsed"
+                    Background="Transparent" BorderThickness="0">
                 <Rectangle Width="30" Height="30"
                        Fill="{DynamicResource AccentColorBrush}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Uniform"
-                                 Visual="{StaticResource mp_list}"></VisualBrush>
+                                 Visual="{StaticResource MpList}"></VisualBrush>
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
             <Button Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"
-                VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5,5,20,5"
-                Padding="2" ToolTip="Отобразить в виде дерева" Opacity="0.5"
-                MouseEnter="DocumentShowButtons_OnMouseEnter" MouseLeave="DocumentShowButtons_OnMouseLeave"
-                Name="BtShowAsTree" Click="BtShowAsTree_OnClick" Visibility="Collapsed"
-                 Background="Transparent" BorderThickness="0">
+                    VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5,5,20,5"
+                    Padding="2" ToolTip="{Binding Source={StaticResource Lang}, XPath=h3}" Opacity="0.5"
+                    MouseEnter="DocumentShowButtons_OnMouseEnter" MouseLeave="DocumentShowButtons_OnMouseLeave"
+                    Name="BtShowAsTree" Click="BtShowAsTree_OnClick" Visibility="Collapsed"
+                    Background="Transparent" BorderThickness="0">
                 <Rectangle Width="30" Height="30"
                        Fill="{DynamicResource AccentColorBrush}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Uniform"
-                                 Visual="{StaticResource mp_text_align_right}"></VisualBrush>
+                                 Visual="{StaticResource MpTextAlignRight}"></VisualBrush>
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
 
             <TextBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Margin="2" TextWrapping="Wrap"
-                 VerticalAlignment="Center" Name="TbDocumentName" controls:TextBoxHelper.Watermark="Название документа"
-                 controls:TextBoxHelper.SelectAllOnFocus="True"
-                 Text="{Binding Path=DocumentName}" IsReadOnly="True"></TextBox>
+                     VerticalAlignment="Center" Name="TbDocumentName" 
+                     controls:TextBoxHelper.Watermark="{Binding Source={StaticResource Lang}, XPath=h4}"
+                     controls:TextBoxHelper.SelectAllOnFocus="True"
+                     Text="{Binding Path=DocumentName}" IsReadOnly="True"></TextBox>
             <Button Name="BtShowImage" Grid.Column="2" Grid.Row="2" Click="BtShowImage_OnClick"
-                IsEnabled="False"  Padding="0" BorderThickness="0"
-                ToolTip="Открыть изображение" Margin="0,0,2,0" VerticalAlignment="Center">
+                    IsEnabled="False"  Padding="0" BorderThickness="0"
+                    ToolTip="{Binding Source={StaticResource Lang},XPath=h5}" Margin="0,0,2,0" VerticalAlignment="Center">
                 <Rectangle Width="26" Height="26"
                            Fill="{DynamicResource AccentColorBrush}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Fill"
-                                 Visual="{StaticResource mp_image}"></VisualBrush>
+                                 Visual="{StaticResource MpImage}"></VisualBrush>
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
             <controls:MetroAnimatedSingleRowTabControl Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3"
                                                    Name="TabControlDetail">
-                <controls:MetroTabItem Header="Таблица" controls:ControlsHelper.HeaderFontSize="14">
+                <controls:MetroTabItem Header="{Binding Source={StaticResource Lang}, XPath=h7}"
+                                       controls:ControlsHelper.HeaderFontSize="14">
                     <DataGrid Name="DgItems"
                           Margin="2,2,2,10" BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}"
                           GridLinesVisibility="All" 
@@ -250,7 +251,8 @@
                         </DataGrid.Style>
                     </DataGrid>
                 </controls:MetroTabItem>
-                <controls:MetroTabItem Header="Свойства" controls:ControlsHelper.HeaderFontSize="14">
+                <controls:MetroTabItem Header="{Binding Source={StaticResource Lang}, XPath=h6}"
+                                       controls:ControlsHelper.HeaderFontSize="14">
                     <Border Margin="2" BorderThickness="0">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -278,7 +280,8 @@
                             </ListBox>
                             <StackPanel Orientation="Vertical" Grid.Column="1" HorizontalAlignment="Center">
                                 <StackPanel Orientation="Vertical" Name="StkSteel" Visibility="Collapsed">
-                                    <TextBlock Text="Марка стали" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold" Margin="5"></TextBlock>
+                                    <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h9}" 
+                                               VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold" Margin="5"></TextBlock>
                                     <StackPanel Orientation="Horizontal">
                                         <ComboBox Name="CbSteelDocument" MinWidth="120" Margin="2" SelectionChanged="CbSteelDocument_OnSelectionChanged">
                                             <ComboBox.ItemTemplate>
@@ -291,18 +294,20 @@
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Name="StkNaim" Visibility="Collapsed" HorizontalAlignment="Center">
-                                    <TextBlock Text="Наименование" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold" Margin="5"></TextBlock>
+                                    <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h8}"
+                                               VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold" Margin="5"></TextBlock>
                                     <TextBlock Name="TbNaimFirst" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2"></TextBlock>
-                                    <GridSplitter BorderThickness="1" BorderBrush="{DynamicResource TextBrush}" HorizontalAlignment="Stretch"
-                                              Name="NaimSplitter"></GridSplitter>
+                                    <GridSplitter BorderThickness="1" BorderBrush="{DynamicResource TextBrush}"
+                                                  HorizontalAlignment="Stretch" Name="NaimSplitter"></GridSplitter>
                                     <TextBlock Name="TbNaimSecond" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2"></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
                     </Border>
                 </controls:MetroTabItem>
-                <controls:MetroTabItem Header="Экспорт" controls:ControlsHelper.HeaderFontSize="14"
-                                   Visibility="Collapsed" Name="TabItemExport">
+                <controls:MetroTabItem Header="{Binding Source={StaticResource Lang}, XPath=h10}"
+                                       controls:ControlsHelper.HeaderFontSize="14"
+                                       Visibility="Collapsed" Name="TabItemExport">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -315,36 +320,38 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid.Resources>
-                            <Canvas x:Key="mp_office_excel" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                                <Path Width="38.0003" Height="36.5" Canvas.Left="18.9997" Canvas.Top="19.7506" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 42,24L 57,24L 57,52L 42,52L 42,50L 47,50L 47,46L 42,46L 42,45L 47,45L 47,41L 42,41L 42,40L 47,40L 47,36L 42,36L 42,35L 47,35L 47,31L 42,31L 42,30L 47,30L 47,26L 42,26L 42,24 Z M 54.9995,50.0005L 54.9997,46.0003L 47.9995,46.0003L 47.9995,50.0005L 54.9995,50.0005 Z M 54.9996,41.0004L 47.9995,41.0004L 47.9995,45.0003L 54.9997,45.0003L 54.9996,41.0004 Z M 54.9996,36.0004L 47.9995,36.0004L 47.9995,40.0004L 54.9996,40.0004L 54.9996,36.0004 Z M 54.9996,31.0004L 47.9995,31.0004L 47.9995,35.0004L 54.9996,35.0004L 54.9996,31.0004 Z M 54.9995,26.0005L 47.9995,26.0005L 47.9995,30.0004L 54.9996,30.0004L 54.9995,26.0005 Z M 18.9997,23.7503L 40.9994,19.7506L 40.9994,56.2506L 18.9997,52.2503L 18.9997,23.7503 Z M 34.6404,44.5147L 31.3367,37.4084L 34.5522,30.4699L 31.9399,30.5805L 30.2234,34.6963L 30.0162,35.3903L 29.8872,35.8892L 29.8596,35.8895C 29.4574,34.1248 28.7481,32.4436 28.1318,30.7417L 25.2803,30.8624L 28.2549,37.4637L 24.997,44.0621L 27.7904,44.1932L 29.5296,39.8757L 29.7578,38.9297L 29.7876,38.93C 30.2317,40.8236 31.1236,42.5844 31.861,44.3843L 34.6404,44.5147 Z "/>
+                            <Canvas x:Key="MpOfficeExcel" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+                                <Path Width="38.0003" Height="36.5" Canvas.Left="18.9997" Canvas.Top="19.7506" Stretch="Fill" Fill="Black" Data="F1 M 42,24L 57,24L 57,52L 42,52L 42,50L 47,50L 47,46L 42,46L 42,45L 47,45L 47,41L 42,41L 42,40L 47,40L 47,36L 42,36L 42,35L 47,35L 47,31L 42,31L 42,30L 47,30L 47,26L 42,26L 42,24 Z M 54.9995,50.0005L 54.9997,46.0003L 47.9995,46.0003L 47.9995,50.0005L 54.9995,50.0005 Z M 54.9996,41.0004L 47.9995,41.0004L 47.9995,45.0003L 54.9997,45.0003L 54.9996,41.0004 Z M 54.9996,36.0004L 47.9995,36.0004L 47.9995,40.0004L 54.9996,40.0004L 54.9996,36.0004 Z M 54.9996,31.0004L 47.9995,31.0004L 47.9995,35.0004L 54.9996,35.0004L 54.9996,31.0004 Z M 54.9995,26.0005L 47.9995,26.0005L 47.9995,30.0004L 54.9996,30.0004L 54.9995,26.0005 Z M 18.9997,23.7503L 40.9994,19.7506L 40.9994,56.2506L 18.9997,52.2503L 18.9997,23.7503 Z M 34.6404,44.5147L 31.3367,37.4084L 34.5522,30.4699L 31.9399,30.5805L 30.2234,34.6963L 30.0162,35.3903L 29.8872,35.8892L 29.8596,35.8895C 29.4574,34.1248 28.7481,32.4436 28.1318,30.7417L 25.2803,30.8624L 28.2549,37.4637L 24.997,44.0621L 27.7904,44.1932L 29.5296,39.8757L 29.7578,38.9297L 29.7876,38.93C 30.2317,40.8236 31.1236,42.5844 31.861,44.3843L 34.6404,44.5147 Z "/>
                             </Canvas>
-                            <Canvas x:Key="mp_office_word" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                                <Path Width="38.0001" Height="36" Canvas.Left="18.9999" Canvas.Top="20" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 42,24L 57,24L 57,52L 42,52L 42,49L 53.9999,49L 54,47L 42,47L 42,45L 54,45L 54,43L 42,43L 42,41L 54,41L 54,39L 42,39L 42,37L 54,37L 54,35L 42,35L 42,33L 54,33L 53.9999,31L 41.9999,31L 41.9999,29L 53.9999,29L 54,27L 42,27L 42,24 Z M 18.9999,23.5001L 41,20L 41,56L 18.9999,52.5L 18.9999,23.5001 Z M 36.88,32.1262L 34.5424,32.2511L 32.9646,41.8358L 32.9349,41.8347C 32.5315,38.6677 31.741,35.5618 31.0946,32.4353L 28.6148,32.5678L 26.538,41.6211L 26.4945,41.6195C 26.1811,38.638 25.4794,35.7097 24.9146,32.7655L 22.3844,32.9007L 25.0893,44.0476L 27.7649,44.2124L 29.6873,35.4199L 29.7148,35.4192C 30.0891,38.4712 30.9304,41.4481 31.6015,44.4488L 34.1692,44.607L 36.88,32.1262 Z "/>
+                            <Canvas x:Key="MpOfficeWord" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+                                <Path Width="38.0001" Height="36" Canvas.Left="18.9999" Canvas.Top="20" Stretch="Fill" Fill="Black" Data="F1 M 42,24L 57,24L 57,52L 42,52L 42,49L 53.9999,49L 54,47L 42,47L 42,45L 54,45L 54,43L 42,43L 42,41L 54,41L 54,39L 42,39L 42,37L 54,37L 54,35L 42,35L 42,33L 54,33L 53.9999,31L 41.9999,31L 41.9999,29L 53.9999,29L 54,27L 42,27L 42,24 Z M 18.9999,23.5001L 41,20L 41,56L 18.9999,52.5L 18.9999,23.5001 Z M 36.88,32.1262L 34.5424,32.2511L 32.9646,41.8358L 32.9349,41.8347C 32.5315,38.6677 31.741,35.5618 31.0946,32.4353L 28.6148,32.5678L 26.538,41.6211L 26.4945,41.6195C 26.1811,38.638 25.4794,35.7097 24.9146,32.7655L 22.3844,32.9007L 25.0893,44.0476L 27.7649,44.2124L 29.6873,35.4199L 29.7148,35.4192C 30.0891,38.4712 30.9304,41.4481 31.6015,44.4488L 34.1692,44.607L 36.88,32.1262 Z "/>
                             </Canvas>
 
                         </Grid.Resources>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Экспорт документа"
+                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Source={StaticResource Lang}, XPath=h11}"
                            HorizontalAlignment="Center" Margin="5" FontSize="18" FontWeight="SemiBold"></TextBlock>
 
-                        <Button Name="BtExportDocumentToExcel" Grid.Column="1" Grid.Row="1"
-                             Padding="2"
-                            ToolTip="Экспорт в excel" Margin="2" Click="BtExportDocumentToExcel_OnClick">
+                        <Button Name="BtExportDocumentToExcel" Grid.Column="1" 
+                                Grid.Row="1" Padding="2"
+                                ToolTip="{Binding Source={StaticResource Lang}, XPath=h12}"
+                                Margin="2" Click="BtExportDocumentToExcel_OnClick">
                             <Rectangle Width="40" Height="40"
                                    Fill="{DynamicResource AccentColorBrush}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Uniform"
-                                             Visual="{StaticResource mp_office_excel}"></VisualBrush>
+                                             Visual="{StaticResource MpOfficeExcel}"></VisualBrush>
                                 </Rectangle.OpacityMask>
                             </Rectangle>
                         </Button>
-                        <Button Name="BtExportDocumentToWord" Grid.Column="2" Grid.Row="1"
-                             Padding="2"
-                            ToolTip="Экспорт в word" Margin="2" Click="BtExportDocumentToWord_OnClick">
+                        <Button Name="BtExportDocumentToWord" Grid.Column="2" 
+                                Grid.Row="1" Padding="2"
+                                ToolTip="{Binding Source={StaticResource Lang}, XPath=h13}"
+                                Margin="2" Click="BtExportDocumentToWord_OnClick">
                             <Rectangle Width="40" Height="40"
                                    Fill="{DynamicResource AccentColorBrush}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Uniform"
-                                             Visual="{StaticResource mp_office_word}"></VisualBrush>
+                                             Visual="{StaticResource MpOfficeWord}"></VisualBrush>
                                 </Rectangle.OpacityMask>
                             </Rectangle>
                         </Button>

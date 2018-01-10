@@ -3,9 +3,6 @@ using ModPlusAPI.Windows.Helpers;
 
 namespace mpDbViewer
 {
-    /// <summary>
-    /// Логика взаимодействия для ShowBaseElementImage.xaml
-    /// </summary>
     public partial class ShowBaseElementImage
     {
         public ShowBaseElementImage()

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -16,18 +15,15 @@ using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using mpBaseInt;
 using ModPlusAPI;
-using ModPlusAPI.Windows;
 using ModPlusAPI.Windows.Helpers;
 using Word = Microsoft.Office.Interop.Word;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace mpDbViewer
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MpDbviewerWindow
     {
+        private const string LangItem = "mpDBviewer";
         // Текущая коллекция документов (база данных) с которой работаю
         private ICollection<BaseDocument> _currentDocumentCollection;
         // Текущий выбранный документ
@@ -40,6 +36,7 @@ namespace mpDbViewer
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
+            FlyoutSearch.Header = ModPlusAPI.Language.GetItem(LangItem, "h16");
             SizeToContent = SizeToContent.Manual;
             // ОБЯЗАТЕЛЬНО!
             // "Загрузка" документов баз данных
@@ -109,8 +106,7 @@ namespace mpDbViewer
         private void CbDataBases_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ClearAllControls();
-            var comboBox = sender as ComboBox;
-            if (comboBox != null)
+            if (sender is ComboBox comboBox)
             {
                 switch (comboBox.SelectedIndex)
                 {
@@ -213,8 +209,7 @@ namespace mpDbViewer
         private void LbDocuments_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var listbox = sender as ListBox;
-            var docInBase = listbox?.SelectedItem as BaseDocument;
-            if (docInBase != null) FillDataGridWithItems(docInBase);
+            if (listbox?.SelectedItem is BaseDocument docInBase) FillDataGridWithItems(docInBase);
         }
         // Выбор документа в TreeView
         private void TvDocuments_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -314,8 +309,7 @@ namespace mpDbViewer
         private void TbSearchTxt_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             // Пусть работает от трех символов и выше
-            var textbox = sender as TextBox;
-            if (textbox != null)
+            if (sender is TextBox textbox)
             {
                 if (textbox.Text.Length >= 2)
                     SearchDocumentsInDb(textbox.Text);
@@ -353,8 +347,7 @@ namespace mpDbViewer
         private void LbSearchResults_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var listBox = sender as ListBox;
-            var baseElement = listBox?.SelectedItem as BaseDocument;
-            if (baseElement != null)
+            if (listBox?.SelectedItem is BaseDocument baseElement)
             {
                 // Выбираем в списке базу
                 foreach (ComboBoxItem item in CbDataBases.Items)
@@ -423,8 +416,7 @@ namespace mpDbViewer
         // Навели мышку на кнопку
         private void DocumentShowButtons_OnMouseEnter(object sender, MouseEventArgs e)
         {
-            var btn = sender as Button;
-            if (btn != null) btn.Opacity = 1;
+            if (sender is Button btn) btn.Opacity = 1;
         }
 
         // Убрали мышку с кнопки
@@ -470,8 +462,7 @@ namespace mpDbViewer
             CbSteelType.ItemsSource = null;
             var comboBox = sender as ComboBox;
             var steelDoc = comboBox?.SelectedItem;
-            var steel = steelDoc as Steel;
-            if (steel != null)
+            if (steelDoc is Steel steel)
             {
                 CbSteelType.ItemsSource = steel.Values;
                 comboBox.ToolTip = steel.DocumentName;
@@ -543,18 +534,17 @@ namespace mpDbViewer
                 if (!appended) sb.Append(_char);
             }
             TbNaimFirst.Text = sb.ToString();
-            var steel = CbSteelDocument.SelectedItem as Steel;
-            if (steel != null)
+            if (CbSteelDocument.SelectedItem is Steel steel)
                 TbNaimSecond.Text = CbSteelType.SelectedItem + " " + steel.Document;
         }
-        
+
         #region Export
         // Експорт документа в Excel
         private void BtExportDocumentToExcel_OnClick(object sender, RoutedEventArgs e)
         {
             if (_currentDocument != null)
             {
-                var dialogProgress = new ExportProgressDialog("Экспорт в Excel", ExportDocumentToExcel) { Topmost = true };
+                var dialogProgress = new ExportProgressDialog(ModPlusAPI.Language.GetItem(LangItem, "h12"), ExportDocumentToExcel) { Topmost = true };
                 dialogProgress.ShowDialog();
             }
         }
@@ -562,7 +552,7 @@ namespace mpDbViewer
         private void ExportDocumentToExcel(object sender, DoWorkEventArgs e)
         {
             var worker = sender as BackgroundWorker;
-            worker.ReportProgress(0, "Создание нового документа");
+            worker.ReportProgress(0, ModPlusAPI.Language.GetItem(LangItem, "p1"));
             // Создание документа
             // Start Excel and Create new document
             Excel.Range rng;
@@ -588,14 +578,14 @@ namespace mpDbViewer
                 oStyle2.VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
                 //***************************
                 rng = oSheet.get_Range("A1");
-                rng.set_Value(null, "Номер документа: " + _currentDocument.DocumentType + " " + _currentDocument.DocumentNumber + "\n");
+                rng.set_Value(null, ModPlusAPI.Language.GetItem(LangItem, "p2") + " " + _currentDocument.DocumentType + " " + _currentDocument.DocumentNumber + "\n");
                 rng.Style = "HEAD_STYLE";
                 rng.WrapText = false;
                 rng.HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
                 rng.Rows.AutoFit();
                 //******************************
                 rng = oSheet.Range["A2"];
-                rng.set_Value(null, "Название документа: " + _currentDocument.DocumentName + "\"" + "\n");
+                rng.set_Value(null, ModPlusAPI.Language.GetItem(LangItem, "h4") + ": " + _currentDocument.DocumentName + "\"" + "\n");
                 rng.Style = "HEAD_STYLE";
                 rng.WrapText = false;
                 rng.HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
@@ -603,7 +593,7 @@ namespace mpDbViewer
 
                 if (_currentDocument.SymbolCount > 0)
                 {
-                    worker.ReportProgress(0, "Заполнение шапки");
+                    worker.ReportProgress(0, ModPlusAPI.Language.GetItem(LangItem, "p3"));
                     // Заполняем шапку таблицы
                     for (var j = 0; j < _currentDocument.SymbolCount; j++)
                     {
@@ -629,7 +619,7 @@ namespace mpDbViewer
                             ReleaseComObject(oExcel);
                             break;
                         }
-                        worker.ReportProgress(Convert.ToInt32(((decimal)x / maxRecords) * 100), "Заполнение данных");
+                        worker.ReportProgress(Convert.ToInt32(((decimal)x / maxRecords) * 100), ModPlusAPI.Language.GetItem(LangItem, "p4"));
 
                         for (int j = 0; j < _currentDocument.SymbolCount; j++)
                         {
@@ -664,7 +654,7 @@ namespace mpDbViewer
         // Получить список всех документов в базе данных
         private void BtExportDocumentsNameToTxtFile_OnClick(object sender, RoutedEventArgs e)
         {
-            var dialogProgress = new ExportProgressDialog("Список документов в базе", GetAllDocuments) { Topmost = true };
+            var dialogProgress = new ExportProgressDialog(ModPlusAPI.Language.GetItem(LangItem, "h18"), GetAllDocuments) { Topmost = true };
             dialogProgress.ShowDialog();
         }
         private static void GetAllDocuments(object sender, DoWorkEventArgs e)
@@ -694,13 +684,13 @@ namespace mpDbViewer
             }
             ModPlusAPI.IO.String.ShowTextWithNotepad(str);
         }
-        
+
         // Експорт документа в Word
         private void BtExportDocumentToWord_OnClick(object sender, RoutedEventArgs e)
         {
             if (_currentDocument != null)
             {
-                var dialogProgress = new ExportProgressDialog("Экспорт в Word", ExportDocumentToWord) { Topmost = true };
+                var dialogProgress = new ExportProgressDialog(ModPlusAPI.Language.GetItem(LangItem, "h13"), ExportDocumentToWord) { Topmost = true };
                 dialogProgress.ShowDialog();
             }
         }
@@ -708,7 +698,7 @@ namespace mpDbViewer
         private void ExportDocumentToWord(object sender, DoWorkEventArgs e)
         {
             var worker = sender as BackgroundWorker;
-            worker.ReportProgress(0, "Создание нового документа");
+            worker.ReportProgress(0, ModPlusAPI.Language.GetItem(LangItem, "p1"));
             object SaveChanged = Word.WdSaveOptions.wdDoNotSaveChanges;
             var oWord = new Word.Application();
             try
@@ -733,11 +723,11 @@ namespace mpDbViewer
                 object oMissing = Missing.Value;
                 oDoc.Paragraphs.Add(ref oMissing);
                 Word.Paragraph oParagraph1 = oDoc.Paragraphs[1];
-                oParagraph1.Range.Text = "Номер документа: " + _currentDocument.DocumentType + " " + _currentDocument.DocumentNumber + "\n";
+                oParagraph1.Range.Text = ModPlusAPI.Language.GetItem(LangItem, "p2") + " " + _currentDocument.DocumentType + " " + _currentDocument.DocumentNumber + "\n";
                 ///////////////////////////////////////////////
                 oDoc.Paragraphs.Add(ref oMissing);
                 Word.Paragraph oParagraph2 = oDoc.Paragraphs[2];
-                oParagraph2.Range.Text = "Название документа: " + _currentDocument.DocumentName + "\"" + "\n";
+                oParagraph2.Range.Text = ModPlusAPI.Language.GetItem(LangItem, "h4") + ": " + _currentDocument.DocumentName + "\"" + "\n";
                 // Изображение
                 //////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////
@@ -761,7 +751,7 @@ namespace mpDbViewer
                                     ref defaultTableBehavior,
                                     ref autoFitBehavior);
                     Word.Table oTable = oDoc.Tables[1];
-                    worker.ReportProgress(0, "Заполнение шапки");
+                    worker.ReportProgress(0, ModPlusAPI.Language.GetItem(LangItem, "p3"));
                     // Заполняем шапку таблицы
                     for (var j = 0; j < oTable.Columns.Count; j++)
                     {
@@ -781,7 +771,7 @@ namespace mpDbViewer
                             ReleaseComObject(oWord);
                             break;
                         }
-                        worker.ReportProgress(Convert.ToInt32(((decimal)x / maxRecords) * 100), "Заполнение данных");
+                        worker.ReportProgress(Convert.ToInt32(((decimal)x / maxRecords) * 100), ModPlusAPI.Language.GetItem(LangItem, "p4"));
 
                         for (var j = 0; j < _currentDocument.SymbolCount; j++)
                         {

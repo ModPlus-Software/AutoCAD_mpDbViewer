@@ -5,11 +5,10 @@ using ModPlusAPI.Windows.Helpers;
 
 namespace mpDbViewer
 {
-    /// <summary>
-    /// Логика взаимодействия для ExportProgressDialog.xaml
-    /// </summary>
     public partial class ExportProgressDialog
     {
+        private const string LangItem = "mpDBviewer";
+
         readonly BackgroundWorker _backgroundWorker = new BackgroundWorker
         {
             WorkerSupportsCancellation = true,
@@ -45,7 +44,7 @@ namespace mpDbViewer
 
         private void BtCancel_OnClick(object sender, RoutedEventArgs e)
         {
-            TbCurrentWorkLabel.Text = "Отмена...";
+            TbCurrentWorkLabel.Text = ModPlusAPI.Language.GetItem(LangItem, "cancel") + "...";
             _backgroundWorker.CancelAsync(); // Tell worker to abort.
             BtCancel.IsEnabled = false;
         }
