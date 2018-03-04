@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
-using ModPlusAPI.Windows.Helpers;
 
 namespace mpDbViewer
 {
@@ -18,7 +17,6 @@ namespace mpDbViewer
         public ExportProgressDialog(string whyWeAreWaiting, DoWorkEventHandler work)
         {
             InitializeComponent();
-            this.OnWindowStartUp();
             Title.Text = whyWeAreWaiting; // Show in title bar
             _backgroundWorker.DoWork += work; // Event handler to be called in context of new thread.
             _backgroundWorker.ProgressChanged += backgroundWorker_ProgressChanged;

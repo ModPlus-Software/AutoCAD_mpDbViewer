@@ -1,22 +1,16 @@
-﻿<controls:MetroWindow x:Class="mpDbViewer.ExportProgressDialog"
+﻿<mpc:BaseMetroWindow x:Class="mpDbViewer.ExportProgressDialog"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-                      WindowStyle="None" WindowStartupLocation="CenterScreen"
-                      ShowMaxRestoreButton="False" ShowMinButton="False" ShowCloseButton="False"
+                      xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:mpc="clr-namespace:ModPlusAPI.Windows.Mpc;assembly=ModPlusAPI"
+                      WindowStyle="None" ShowCloseButton="False" TitlebarHeight="0"
                       ShowInTaskbar="False" ShowTitleBar="False"
                       SizeToContent="WidthAndHeight" ResizeMode="NoResize"
                       Loaded="ExportProgressDialog_OnLoaded">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/ModPlusAPI;component/Windows/WinResources/Styles.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/ModPlusAPI;component/Windows/WinResources/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <XmlDataProvider x:Key="Lang" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/mpDBviewer"></XmlDataProvider>
         </ResourceDictionary>
@@ -34,11 +28,12 @@
                    Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
         <TextBlock Name="TbProgress" Grid.Row="2" HorizontalAlignment="Center" 
                    Margin="2" VerticalAlignment="Center"></TextBlock>
-        <controls:ProgressRing Grid.Row="2" IsActive="True" Foreground="{DynamicResource AccentColorBrush}" Margin="5"
-                               Name="ProgressRing"></controls:ProgressRing>
-        <controls:MetroProgressBar Grid.Row="2" Margin="5" Name="ProgressBar" Visibility="Collapsed"></controls:MetroProgressBar>
+        <mah:ProgressRing Grid.Row="2" IsActive="True" Foreground="{DynamicResource AccentColorBrush}" Margin="5"
+                               Name="ProgressRing"></mah:ProgressRing>
+        <mah:MetroProgressBar Grid.Row="2" Margin="5" Name="ProgressBar" Visibility="Collapsed"></mah:MetroProgressBar>
         <Button Grid.Row="3" Name="BtCancel" Content="{Binding Source={StaticResource Lang}, XPath=cancel}"
                 HorizontalAlignment="Stretch"
                 Margin="2" Click="BtCancel_OnClick"></Button>
     </Grid>
-</controls:MetroWindow>
+</mpc:BaseMetroWindow>
+

@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using ModPlusAPI.Windows.Helpers;
 
 namespace mpDbViewer
 {
@@ -8,7 +7,6 @@ namespace mpDbViewer
         public ShowBaseElementImage()
         {
             InitializeComponent();
-            this.OnWindowStartUp();
         }
 
         private void ShowBaseElementImage_OnKeyDown(object sender, KeyEventArgs e)

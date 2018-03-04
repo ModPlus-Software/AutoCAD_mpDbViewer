@@ -31,12 +31,11 @@ namespace mpDbViewer
         public MpDbviewerWindow()
         {
             InitializeComponent();
-            this.OnWindowStartUp();
+            Title = ModPlusAPI.Language.GetItem(LangItem, "h1");
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            FlyoutSearch.Header = ModPlusAPI.Language.GetItem(LangItem, "h16");
             SizeToContent = SizeToContent.Manual;
             // ОБЯЗАТЕЛЬНО!
             // "Загрузка" документов баз данных
@@ -70,10 +69,6 @@ namespace mpDbViewer
                     }
                 }
             }
-        }
-        private void MpDbviewerWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
         }
         // Очистка всех контроллов
         private void ClearAllControls()
