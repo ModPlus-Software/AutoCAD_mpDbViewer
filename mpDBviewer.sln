@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpDBviewer_2010", "mpDBviewer_2010\mpDBviewer_2010.csproj", "{A52B3535-C21E-4178-8B14-329E76FE2A00}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpDBviewer_2017", "mpDBviewer_2017\mpDBviewer_2017.csproj", "{354D8E8D-4A05-4C9E-830B-E71C9B5AF4EC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpDBviewer_2018", "mpDBviewer_2018\mpDBviewer_2018.csproj", "{5F151C69-B05A-44D5-920A-308A38FEE8BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpDBviewer_2019", "mpDBviewer_2019\mpDBviewer_2019.csproj", "{9B2FEA47-ADFD-4393-9772-1D32260B9C8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,8 +65,15 @@ Global
 		{5F151C69-B05A-44D5-920A-308A38FEE8BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F151C69-B05A-44D5-920A-308A38FEE8BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F151C69-B05A-44D5-920A-308A38FEE8BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B2FEA47-ADFD-4393-9772-1D32260B9C8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B2FEA47-ADFD-4393-9772-1D32260B9C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B2FEA47-ADFD-4393-9772-1D32260B9C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B2FEA47-ADFD-4393-9772-1D32260B9C8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4C4DE947-4673-4DC8-98ED-01E6F5844B35}
 	EndGlobalSection
 EndGlobal
