@@ -1,7 +1,8 @@
-﻿using System;
+﻿using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
+using System;
 using Autodesk.AutoCAD.Runtime;
 using mpDbViewer;
-using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
+using ModPlusAPI;
 
 namespace mpDBviewer
 {
@@ -11,6 +12,7 @@ namespace mpDBviewer
         [CommandMethod("ModPlus", "mpDBviewer", CommandFlags.Modal)]
         public void StartMpDBviewer()
         {
+            Statistic.SendCommandStarting(new Interface());
             if (Window == null)
             {
                 Window = new MpDbviewerWindow();
