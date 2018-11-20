@@ -227,6 +227,10 @@ namespace mpDbViewer
             }
             LbDocumentTypes.ItemsSource = baseDocument.ItemTypes;
 
+            if (baseDocument.ItemTypes.Any())
+                LbDocumentTypes.Visibility = Visibility.Visible;
+            else LbDocumentTypes.Visibility = Visibility.Collapsed;
+
             if (!(baseDocument.SymbolCount == 0 | baseDocument.Symbols == null))
             {
                 for (var i = 1; i <= baseDocument.SymbolCount; i++)
