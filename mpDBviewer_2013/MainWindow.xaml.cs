@@ -21,6 +21,8 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace mpDbViewer
 {
+    using System.Windows.Media;
+
     public partial class MpDbviewerWindow
     {
         private const string LangItem = "mpDBviewer";
@@ -96,6 +98,7 @@ namespace mpDbViewer
             _currentDocument = null;
             TbNaimFirst.Text = string.Empty;
             TbNaimSecond.Text = string.Empty;
+            TbDocumentStatus.Text = string.Empty;
         }
         // Выбор базы данных
         private void CbDataBases_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -257,13 +260,29 @@ namespace mpDbViewer
             BtShowImage.IsEnabled = !string.IsNullOrEmpty(baseDocument.Image);
             // Название
             TbDocumentName.DataContext = baseDocument;
+            // Статус документа
+            if (baseDocument.DocStatus == null)
+            {
+                TbDocumentStatus.Text = ModPlusAPI.Language.GetItem(LangItem, "h22");
+                TbDocumentStatus.Foreground = Resources["BlackBrush"] as SolidColorBrush;
+            }
+            else if (baseDocument.DocStatus.Value)
+            {
+                TbDocumentStatus.Text = ModPlusAPI.Language.GetItem(LangItem, "h20");
+                TbDocumentStatus.Foreground = Resources["SuccessBrush"] as SolidColorBrush;
+            }
+            else
+            {
+                TbDocumentStatus.Text = ModPlusAPI.Language.GetItem(LangItem, "h21");
+                TbDocumentStatus.Foreground = Resources["ErrorBrush"] as SolidColorBrush;
+            }
             // Видимость кнопок и прочего
             TabItemExport.Visibility = Visibility.Visible;
             // Если есть сталь
             StkSteel.Visibility = baseDocument.HasSteel ? Visibility.Visible : Visibility.Collapsed;
             NaimSplitter.Visibility = baseDocument.HasSteel ? Visibility.Visible : Visibility.Collapsed;
             TbNaimSecond.Visibility = baseDocument.HasSteel ? Visibility.Visible : Visibility.Collapsed;
-            // Включаем отображение "Наименовани"
+            // Включаем отображение "Наименования"
             StkNaim.Visibility = Visibility.Visible;
         }
 

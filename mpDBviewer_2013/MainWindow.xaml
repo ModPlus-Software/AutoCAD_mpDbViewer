@@ -79,6 +79,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <ComboBox Grid.Row="0" Grid.Column="0" Width="150" Name="CbDataBases"
@@ -89,12 +90,12 @@
             <ComboBoxItem Name="DbMaterial" Content="{Binding Source={StaticResource Lang}, XPath=cb4}"></ComboBoxItem>
             <ComboBoxItem Name="DbOther" Content="{Binding Source={StaticResource Lang}, XPath=cb5}"></ComboBoxItem>
         </ComboBox>
-        <ListBox Grid.Column="0" Grid.Row="1"  Name="LbGroups"
-                 SelectionChanged="LbGroups_OnSelectionChanged" Height="120">
+        <ListBox Grid.Column="0" Grid.Row="1"  Name="LbGroups" Height="176"
+                 SelectionChanged="LbGroups_OnSelectionChanged">
         </ListBox>
         <!--В виде списка-->
         <ListBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" 
-                      Name="LbDocuments" Height="150"
+                      Name="LbDocuments" Height="200"
                      SelectionChanged="LbDocuments_OnSelectionChanged"
                      Visibility="Collapsed">
             <ListBox.ItemTemplate>
@@ -112,7 +113,7 @@
         </ListBox>
         <!--В виде дерева-->
         <TreeView Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2"
-                       Name="TvDocuments" Height="152"
+                       Name="TvDocuments" Height="200"
                       SelectedItemChanged="TvDocuments_OnSelectedItemChanged">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Documents}">
@@ -176,7 +177,13 @@
                 </Canvas>
             </Viewbox>
         </Button>
-        <TabControl Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Name="TabControlDetail">
+        <!-- doc status -->
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Orientation="Horizontal">
+            <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h19}" Margin="4 0"></TextBlock>
+            <TextBlock Name="TbDocumentStatus" FontWeight="SemiBold"></TextBlock>
+        </StackPanel>
+
+        <TabControl Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" Name="TabControlDetail">
             <TabItem Header="{Binding Source={StaticResource Lang}, XPath=h7}">
                 <DataGrid Name="DgItems" Margin="4,4,4,10" 
                           GridLinesVisibility="All" SelectionMode="Single"
