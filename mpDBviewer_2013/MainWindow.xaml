@@ -1,7 +1,6 @@
 ﻿<mps:ModPlusWindow x:Class="mpDbViewer.MpDbviewerWindow"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                       xmlns:mps="https://modplus.org/winfx/xaml/controls"
                       Loaded="MainWindow_OnLoaded" SizeToContent="WidthAndHeight"
                       Closed="MpDbviewerWindow_OnClosed"

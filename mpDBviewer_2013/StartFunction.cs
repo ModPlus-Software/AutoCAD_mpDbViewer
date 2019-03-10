@@ -12,7 +12,7 @@ namespace mpDBviewer
         [CommandMethod("ModPlus", "mpDBviewer", CommandFlags.Modal)]
         public void StartMpDBviewer()
         {
-            Statistic.SendCommandStarting(new Interface());
+            Statistic.SendCommandStarting(new ModPlusConnector());
             if (Window == null)
             {
                 Window = new MpDbviewerWindow();
