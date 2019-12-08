@@ -1,14 +1,15 @@
-﻿using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
-using System;
-using Autodesk.AutoCAD.Runtime;
-using mpDbViewer;
-using ModPlusAPI;
-
-namespace mpDBviewer
+﻿namespace mpDBviewer
 {
+    using System;
+    using Autodesk.AutoCAD.Runtime;
+    using ModPlusAPI;
+    using mpDbViewer;
+    using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
+
     public class MainFunction
     {
         public static MpDbviewerWindow Window;
+        
         [CommandMethod("ModPlus", "mpDBviewer", CommandFlags.Modal)]
         public void StartMpDBviewer()
         {
@@ -16,20 +17,17 @@ namespace mpDBviewer
             if (Window == null)
             {
                 Window = new MpDbviewerWindow();
-                Window.Closed += win_Closed;
+                Window.Closed += (sender, args) =>
+                {
+                    Window = null;
+                    Autodesk.AutoCAD.Internal.Utils.SetFocusToDwgView();
+                };
             }
 
             if (Window.IsLoaded)
                 Window.Activate();
             else
                 AcApp.ShowModelessWindow(AcApp.MainWindow.Handle, Window);
-        }
-
-        static void win_Closed(object sender, EventArgs e)
-        {
-            Window = null;
-            // Перевод фокуса
-            Autodesk.AutoCAD.Internal.Utils.SetFocusToDwgView();
         }
     }
 }

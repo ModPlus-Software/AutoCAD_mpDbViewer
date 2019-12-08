@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using ModPlusAPI.Interfaces;
-
+﻿#pragma warning disable SA1600 // Elements should be documented
 namespace mpDBviewer
 {
+    using System;
+    using System.Collections.Generic;
+    using ModPlusAPI.Interfaces;
+
     public class ModPlusConnector : IModPlusFunctionInterface
     {
         public SupportedProduct SupportedProduct => SupportedProduct.AutoCAD;
@@ -36,7 +37,7 @@ namespace mpDBviewer
         
         public string LName => "Нормативная база";
         
-        public string Description => "Функция для просмотра нормативной базы данных плагина";
+        public string Description => "Плагин для просмотра нормативной базы данных";
         
         public string Author => "Пекшев Александр aka Modis";
         
@@ -61,3 +62,4 @@ namespace mpDBviewer
         public List<string> SubClassNames => new List<string>();
     }
 }
+#pragma warning restore SA1600 // Elements should be documented
