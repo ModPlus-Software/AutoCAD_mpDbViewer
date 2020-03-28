@@ -1,6 +1,5 @@
 ﻿namespace mpDBviewer
 {
-    using System;
     using Autodesk.AutoCAD.Runtime;
     using ModPlusAPI;
     using mpDbViewer;
