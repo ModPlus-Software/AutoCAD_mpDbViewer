@@ -22,7 +22,7 @@
     using Excel = Microsoft.Office.Interop.Excel;
     using Word = Microsoft.Office.Interop.Word;
 
-    public partial class MpDbviewerWindow
+    public partial class MainWindow
     {
         private const string LangItem = "mpDBviewer";
 
@@ -32,7 +32,7 @@
         // Текущий выбранный документ
         private BaseDocument _currentDocument;
 
-        public MpDbviewerWindow()
+        public MainWindow()
         {
             InitializeComponent();
             Title = ModPlusAPI.Language.GetItem(LangItem, "h1");
@@ -215,8 +215,8 @@
                     if (y != null)
                     {
                         return string.Compare(
-                            x.DocumentShortName + " (" + x.DocumentType + " " + x.DocumentNumber + ")",
-                            y.DocumentShortName + " (" + y.DocumentType + " " + y.DocumentNumber + ")",
+                            $"{x.DocumentShortName} ({x.DocumentType} {x.DocumentNumber})",
+                            $"{y.DocumentShortName} ({y.DocumentType} {y.DocumentNumber})",
                             StringComparison.Ordinal);
                     }
                 }
@@ -268,7 +268,7 @@
                     {
                         IsReadOnly = true,
                         Header = baseDocument.Symbols.ElementAt(i - 1),
-                        Binding = new Binding("Attribute[Prop" + i.ToString(CultureInfo.InvariantCulture) + "].Value")
+                        Binding = new Binding($"Attribute[Prop{i.ToString(CultureInfo.InvariantCulture)}].Value")
                     };
                     DgItems.Columns.Add(dgc);
                 }
@@ -357,7 +357,6 @@
                         break;
                 }
             }
-
         }
 
         #region Search
@@ -624,7 +623,7 @@
 
             TbNaimFirst.Text = sb.ToString();
             if (CbSteelDocument.SelectedItem is Steel steel)
-                TbNaimSecond.Text = CbSteelType.SelectedItem + " " + steel.Document;
+                TbNaimSecond.Text = $"{CbSteelType.SelectedItem} {steel.Document}";
         }
 
         #region Export
@@ -670,7 +669,9 @@
 
                 // ***************************
                 var rng = oSheet.get_Range("A1");
-                rng.set_Value(null, ModPlusAPI.Language.GetItem(LangItem, "p2") + " " + _currentDocument.DocumentType + " " + _currentDocument.DocumentNumber + "\n");
+                rng.set_Value(
+                    null,
+                    $"{ModPlusAPI.Language.GetItem(LangItem, "p2")} {_currentDocument.DocumentType} {_currentDocument.DocumentNumber}\n");
                 rng.Style = "HEAD_STYLE";
                 rng.WrapText = false;
                 rng.HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
@@ -678,7 +679,8 @@
 
                 // ******************************
                 rng = oSheet.Range["A2"];
-                rng.set_Value(null, ModPlusAPI.Language.GetItem(LangItem, "h4") + ": " + _currentDocument.DocumentName + "\"" + "\n");
+                rng.set_Value(
+                    null, $"{ModPlusAPI.Language.GetItem(LangItem, "h4")}: {_currentDocument.DocumentName}\"\n");
                 rng.Style = "HEAD_STYLE";
                 rng.WrapText = false;
                 rng.HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
@@ -725,7 +727,7 @@
                             rng.Style = "MP_STYLE";
                             rng.VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
                             rng.HorizontalAlignment = Excel.XlVAlign.xlVAlignCenter;
-                            var str = item.Attribute("Prop" + (j + 1).ToString(CultureInfo.InvariantCulture)).Value;
+                            var str = item.Attribute($"Prop{(j + 1).ToString(CultureInfo.InvariantCulture)}").Value;
                             rng.set_Value(null, str);
                             rng.BorderAround();
                             rng.Borders.Weight = 2;
@@ -778,7 +780,7 @@
             {
                 var documents = collection
                     .Select(document =>
-                    document.DocumentType + " " + document.DocumentNumber + " " + document.DocumentName + Environment.NewLine)
+                        $"{document.DocumentType} {document.DocumentNumber} {document.DocumentName}{Environment.NewLine}")
                     .ToList();
 
                 documents.Sort();
@@ -786,7 +788,7 @@
                 foreach (var doc in documents.Distinct())
                 {
                     i++;
-                    str += i + "\t" + doc;
+                    str += $"{i}\t{doc}";
                 }
             }
 
@@ -835,11 +837,13 @@
                 object oMissing = Missing.Value;
                 oDoc.Paragraphs.Add(ref oMissing);
                 var oParagraph1 = oDoc.Paragraphs[1];
-                oParagraph1.Range.Text = ModPlusAPI.Language.GetItem(LangItem, "p2") + " " + _currentDocument.DocumentType + " " + _currentDocument.DocumentNumber + "\n";
+                oParagraph1.Range.Text =
+                    $"{ModPlusAPI.Language.GetItem(LangItem, "p2")} {_currentDocument.DocumentType} {_currentDocument.DocumentNumber}\n";
                 ///////////////////////////////////////////////
                 oDoc.Paragraphs.Add(ref oMissing);
                 var oParagraph2 = oDoc.Paragraphs[2];
-                oParagraph2.Range.Text = ModPlusAPI.Language.GetItem(LangItem, "h4") + ": " + _currentDocument.DocumentName + "\"" + "\n";
+                oParagraph2.Range.Text =
+                    $"{ModPlusAPI.Language.GetItem(LangItem, "h4")}: {_currentDocument.DocumentName}\"\n";
 
                 // Изображение
                 //////////////////////////////////////////////////////////////////////
@@ -892,7 +896,7 @@
                             var range = oTable.Cell(i - 1, j + 1).Range;
                             range.ParagraphFormat.Alignment =
                                 Word.WdParagraphAlignment.wdAlignParagraphCenter; // Выравнивание в ячейке
-                            range.Text = item.Attribute("Prop" + (j + 1).ToString(CultureInfo.InvariantCulture)).Value;
+                            range.Text = item.Attribute($"Prop{(j + 1).ToString(CultureInfo.InvariantCulture)}").Value;
                         }
 
                         i++;

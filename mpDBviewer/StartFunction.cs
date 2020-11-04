@@ -1,21 +1,22 @@
 ﻿namespace mpDBviewer
 {
     using Autodesk.AutoCAD.Runtime;
-    using ModPlusAPI;
     using mpDbViewer;
     using AcApp = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
-    public class MainFunction
+    public class PluginStarter
     {
-        public static MpDbviewerWindow Window;
-        
+        public static MainWindow Window;
+
         [CommandMethod("ModPlus", "mpDBviewer", CommandFlags.Modal)]
-        public void StartMpDBviewer()
+        public void Start()
         {
-            Statistic.SendCommandStarting(new ModPlusConnector());
+#if !DEBUG
+            ModPlusAPI.Statistic.SendCommandStarting(new ModPlusConnector());
+#endif
             if (Window == null)
             {
-                Window = new MpDbviewerWindow();
+                Window = new MainWindow();
                 Window.Closed += (sender, args) =>
                 {
                     Window = null;
